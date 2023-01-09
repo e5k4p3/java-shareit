@@ -6,16 +6,15 @@ import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.practicum.shareit.exceptions.EntityAlreadyExistsException;
-import ru.practicum.shareit.exceptions.EntityNotFoundException;
-import ru.practicum.shareit.exceptions.IllegalEntityAccessException;
-import ru.practicum.shareit.exceptions.ValidationException;
+import ru.practicum.shareit.booking.BookingController;
+import ru.practicum.shareit.exceptions.*;
 import ru.practicum.shareit.item.ItemController;
 import ru.practicum.shareit.user.UserController;
 
 @Slf4j
 @RestControllerAdvice(assignableTypes = {UserController.class,
-                                         ItemController.class})
+        ItemController.class,
+        BookingController.class})
 public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -42,7 +41,7 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ErrorResponse handleIllegalAccess(final IllegalEntityAccessException e) {
         log.error(e.getMessage());
-        return new ErrorResponse("Отсутсвие прав доступа к объекту.", e.getMessage());
+        return new ErrorResponse("Отсутствие прав доступа к объекту.", e.getMessage());
     }
 
     @ExceptionHandler
@@ -51,4 +50,33 @@ public class ErrorHandler {
         log.error(e.getMessage());
         return new ErrorResponse("У запроса отсутсвует заголовок.", e.getMessage());
     }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleAvailability(final EntityAvailabilityException e) {
+        log.error(e.getMessage());
+        return new ErrorResponse("Недоступность объекта.", e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleIllegalArgument(final IllegalArgumentException e) {
+        log.error(e.getMessage());
+        return new ErrorResponse("Недопустимый аргумент.", e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleUnsupportedState(final UnsupportedStateException e) {
+        log.error(e.getMessage());
+        return new ErrorResponse(e.getMessage(), "Необрабатываемый аргумент."); // из за постмана, пришлось поменять местами...
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleForbidden(final ForbiddenAccessException e) {
+        log.error(e.getMessage());
+        return new ErrorResponse("Отсутствие прав доступа.", e.getMessage());
+    }
+//    из за тестов постмана, пришлось наплодить столько новых обработчиков...
 }
