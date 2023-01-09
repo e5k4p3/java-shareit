@@ -67,7 +67,7 @@ public class BookingServiceImpl implements BookingService {
         Booking booking = bookingRepository.findById(bookingId).orElseThrow(() ->
                 new EntityNotFoundException("Бронь с id " + bookingId + " не найдена."));
         Item item = itemService.getItemById(booking.getItem().getId());
-        if (booking.getBooker().getId() == userId || item.getOwner() == userId) {
+        if (booking.getBooker().getId().equals(userId) || item.getOwner().equals(userId)) {
             return booking;
         } else {
             throw new ForbiddenAccessException("Пользователь с id " + userId +
@@ -122,14 +122,14 @@ public class BookingServiceImpl implements BookingService {
     }
 
     private void checkItemOwner(Booking booking, Long userId) {
-        if (booking.getItem().getOwner() != userId) {
+        if (!booking.getItem().getOwner().equals(userId)) {
             throw new ForbiddenAccessException("Пользователь с id " + userId +
                     " не имеет прав доступа к изменению статуса бронирования с id " + booking.getId() + ".");
         }
     }
 
     private void checkItemOwnerForSelfBooking(Long itemId, Long userId) {
-        if (itemService.getItemById(itemId).getOwner() == userId) {
+        if (itemService.getItemById(itemId).getOwner().equals(userId)) {
             throw new ForbiddenAccessException("Пользователь не может забронировать собственный предмет.");
         }
     }

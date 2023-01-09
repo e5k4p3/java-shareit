@@ -104,7 +104,7 @@ public class ItemServiceImpl implements ItemService {
         item.setComments(commentRepository.findAllByItemId(itemId).stream()
                 .map(CommentMapper::toCommentDto)
                 .collect(Collectors.toList()));
-        if (item.getOwner() == userId) {
+        if (item.getOwner().equals(userId)) {
             item.setLastBooking(BookingMapper.toBookingDto(bookingRepository.findByItemIdAndEndBeforeAndStatusNot(itemId,
                     LocalDateTime.now(), REJECTED)));
             item.setNextBooking(BookingMapper.toBookingDto(bookingRepository.findByItemIdAndStartAfterAndStatus(itemId,
@@ -142,7 +142,7 @@ public class ItemServiceImpl implements ItemService {
 
     private Item checkItemOwner(Long itemId, Long userId) {
         Item item = checkItemExistence(itemId);
-        if (item.getOwner() != userId) {
+        if (!item.getOwner().equals(userId)) {
             throw new IllegalEntityAccessException("Пользователь с id " + userId +
                     " не имеет прав доступа к изменению объекта с id " + itemId + ".");
         }
