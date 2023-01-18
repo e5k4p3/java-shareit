@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
 @Data
 @AllArgsConstructor
 public class UserDto {
-    private int id;
+    private Long id;
     @NotBlank(message = "Имя не может быть пустым.", groups = Create.class)
     private String name;
     @Email(message = "Email должен быть корректным.", groups = {Create.class, Update.class})
