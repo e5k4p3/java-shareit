@@ -1,11 +1,10 @@
 package ru.practicum.shareit.request.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.*;
 
 import javax.validation.constraints.NotBlank;
 
-@Data
+@Getter
 @AllArgsConstructor
 public class ItemRequestDto {
     private Long id;
