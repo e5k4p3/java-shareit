@@ -2,6 +2,7 @@ package ru.practicum.shareit.booking.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.util.BookingMapper;
@@ -14,6 +15,7 @@ import ru.practicum.shareit.exceptions.*;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.user.service.UserService;
+import ru.practicum.shareit.util.PageableFactory;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -77,22 +79,23 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Booking> getAllBookingsByUserId(Long userId, String state) {
+    public List<Booking> getAllBookingsByUserId(Long userId, String state, Integer from, Integer size) {
         userService.getUserById(userId);
         BookingState stateEnum = checkState(state);
+        Pageable pageable = PageableFactory.makePage(from, size);
         switch (stateEnum) {
             case ALL:
-                return bookingRepository.findAllByBookerIdOrderByStartDesc(userId);
+                return bookingRepository.findAllByBookerIdOrderByStartDesc(userId, pageable);
             case CURRENT:
-                return bookingRepository.findAllByBookerIdAndStartBeforeAndEndAfterOrderByStartDesc(userId, LocalDateTime.now(), LocalDateTime.now());
+                return bookingRepository.findAllByBookerIdAndStartBeforeAndEndAfterOrderByStartDesc(userId, LocalDateTime.now(), LocalDateTime.now(), pageable);
             case FUTURE:
-                return bookingRepository.findAllByBookerIdAndStartAfterOrderByStartDesc(userId, LocalDateTime.now());
+                return bookingRepository.findAllByBookerIdAndStartAfterOrderByStartDesc(userId, LocalDateTime.now(), pageable);
             case PAST:
-                return bookingRepository.findAllByBookerIdAndEndBeforeOrderByStartDesc(userId, LocalDateTime.now());
+                return bookingRepository.findAllByBookerIdAndEndBeforeOrderByStartDesc(userId, LocalDateTime.now(), pageable);
             case WAITING:
-                return bookingRepository.findAllByBookerIdAndStatusEqualsOrderByStartDesc(userId, WAITING);
+                return bookingRepository.findAllByBookerIdAndStatusEqualsOrderByStartDesc(userId, WAITING, pageable);
             case REJECTED:
-                return bookingRepository.findAllByBookerIdAndStatusEqualsOrderByStartDesc(userId, REJECTED);
+                return bookingRepository.findAllByBookerIdAndStatusEqualsOrderByStartDesc(userId, REJECTED, pageable);
             default:
                 throw new UnsupportedOperationException("Недоступная операция.");
         }
@@ -100,22 +103,23 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Booking> getAllBookingsByOwnerId(Long userId, String state) {
+    public List<Booking> getAllBookingsByOwnerId(Long userId, String state, Integer from, Integer size) {
         userService.getUserById(userId);
         BookingState stateEnum = checkState(state);
+        Pageable pageable = PageableFactory.makePage(from, size);
         switch (stateEnum) {
             case ALL:
-                return bookingRepository.findAllByItemOwnerOrderByStartDesc(userId);
+                return bookingRepository.findAllByItemOwnerOrderByStartDesc(userId, pageable);
             case CURRENT:
-                return bookingRepository.findAllByItemOwnerAndStartBeforeAndEndAfterOrderByStartDesc(userId, LocalDateTime.now(), LocalDateTime.now());
+                return bookingRepository.findAllByItemOwnerAndStartBeforeAndEndAfterOrderByStartDesc(userId, LocalDateTime.now(), LocalDateTime.now(), pageable);
             case FUTURE:
-                return bookingRepository.findAllByItemOwnerAndStartAfterOrderByStartDesc(userId, LocalDateTime.now());
+                return bookingRepository.findAllByItemOwnerAndStartAfterOrderByStartDesc(userId, LocalDateTime.now(), pageable);
             case PAST:
-                return bookingRepository.findAllByItemOwnerAndEndBeforeOrderByStartDesc(userId, LocalDateTime.now());
+                return bookingRepository.findAllByItemOwnerAndEndBeforeOrderByStartDesc(userId, LocalDateTime.now(), pageable);
             case WAITING:
-                return bookingRepository.findAllByItemOwnerAndStatusEquals(userId, WAITING);
+                return bookingRepository.findAllByItemOwnerAndStatusEquals(userId, WAITING, pageable);
             case REJECTED:
-                return bookingRepository.findAllByItemOwnerAndStatusEquals(userId, REJECTED);
+                return bookingRepository.findAllByItemOwnerAndStatusEquals(userId, REJECTED, pageable);
             default:
                 throw new UnsupportedOperationException("Недоступная операция.");
         }

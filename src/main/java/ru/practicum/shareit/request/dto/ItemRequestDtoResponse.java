@@ -3,12 +3,12 @@ package ru.practicum.shareit.request.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import javax.validation.constraints.NotBlank;
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
-public class ItemRequestDto {
+public class ItemRequestDtoResponse {
     private Long id;
-    @NotBlank(message = "Описание запроса не может быть пустым.")
     private String description;
+    private LocalDateTime created;
 }
