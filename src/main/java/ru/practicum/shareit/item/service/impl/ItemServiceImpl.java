@@ -19,7 +19,7 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.item.util.ItemMapper;
 import ru.practicum.shareit.user.service.UserService;
-import ru.practicum.shareit.util.PageableFactory;
+import ru.practicum.shareit.util.PageableMaker;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -83,7 +83,7 @@ public class ItemServiceImpl implements ItemService {
     @Transactional
     public List<ItemDtoWithBooking> getAllItemsByUserId(Long userId, Integer from, Integer size) {
         userService.getUserById(userId);
-        return itemRepository.findAllByOwner(userId, PageableFactory.makePage(from, size)).stream()
+        return itemRepository.findAllByOwner(userId, PageableMaker.makePage(from, size)).stream()
                 .map(ItemMapper::toItemDtoWithBooking)
                 .peek(i -> i.setLastBooking(BookingMapper.toBookingDto(
                         bookingRepository.findByItemIdAndEndBeforeAndStatusNot(i.getId(),
@@ -121,7 +121,7 @@ public class ItemServiceImpl implements ItemService {
         if (text.isBlank()) {
             return new ArrayList<>();
         }
-        return itemRepository.findByText(text, PageableFactory.makePage(from, size));
+        return itemRepository.findByText(text, PageableMaker.makePage(from, size));
     }
 
     @Override

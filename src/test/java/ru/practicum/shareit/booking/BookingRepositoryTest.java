@@ -13,7 +13,7 @@ import ru.practicum.shareit.item.dao.ItemRepository;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.dao.UserRepository;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.util.PageableFactory;
+import ru.practicum.shareit.util.PageableMaker;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -88,7 +88,7 @@ public class BookingRepositoryTest {
         );
         entityManager.persist(secondBooking);
         entityManager.getEntityManager().getTransaction().commit();
-        pageable = PageableFactory.makePage(0, 10);
+        pageable = PageableMaker.makePage(0, 10);
         date = LocalDateTime.of(2024, 1, 2, 1, 1, 1);
     }
 

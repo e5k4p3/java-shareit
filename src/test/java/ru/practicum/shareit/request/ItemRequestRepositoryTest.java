@@ -10,7 +10,7 @@ import ru.practicum.shareit.request.dao.ItemRequestRepository;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.dao.UserRepository;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.util.PageableFactory;
+import ru.practicum.shareit.util.PageableMaker;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -55,7 +55,7 @@ public class ItemRequestRepositoryTest {
 
     @Test
     public void findAllByRequesterIdNotTest() {
-        List<ItemRequest> requests = itemRequestRepository.findAllByRequesterIdNotOrderByCreatedDesc(1L, PageableFactory.makePage(0, 10));
+        List<ItemRequest> requests = itemRequestRepository.findAllByRequesterIdNotOrderByCreatedDesc(1L, PageableMaker.makePage(0, 10));
 
         assertEquals(0, requests.size());
     }

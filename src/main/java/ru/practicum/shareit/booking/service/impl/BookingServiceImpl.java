@@ -15,7 +15,7 @@ import ru.practicum.shareit.exceptions.*;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.user.service.UserService;
-import ru.practicum.shareit.util.PageableFactory;
+import ru.practicum.shareit.util.PageableMaker;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -82,7 +82,7 @@ public class BookingServiceImpl implements BookingService {
     public List<Booking> getAllBookingsByUserId(Long userId, String state, Integer from, Integer size) {
         userService.getUserById(userId);
         BookingState stateEnum = checkState(state);
-        Pageable pageable = PageableFactory.makePage(from, size);
+        Pageable pageable = PageableMaker.makePage(from, size);
         switch (stateEnum) {
             case ALL:
                 return bookingRepository.findAllByBookerIdOrderByStartDesc(userId, pageable);
@@ -106,7 +106,7 @@ public class BookingServiceImpl implements BookingService {
     public List<Booking> getAllBookingsByOwnerId(Long userId, String state, Integer from, Integer size) {
         userService.getUserById(userId);
         BookingState stateEnum = checkState(state);
-        Pageable pageable = PageableFactory.makePage(from, size);
+        Pageable pageable = PageableMaker.makePage(from, size);
         switch (stateEnum) {
             case ALL:
                 return bookingRepository.findAllByItemOwnerOrderByStartDesc(userId, pageable);

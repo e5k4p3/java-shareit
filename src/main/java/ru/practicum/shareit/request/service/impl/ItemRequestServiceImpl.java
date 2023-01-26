@@ -14,7 +14,7 @@ import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.service.ItemRequestService;
 import ru.practicum.shareit.request.util.ItemRequestMapper;
 import ru.practicum.shareit.user.service.UserService;
-import ru.practicum.shareit.util.PageableFactory;
+import ru.practicum.shareit.util.PageableMaker;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -52,7 +52,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     @Transactional(readOnly = true)
     public List<ItemRequestDtoWithItems> getAllRequests(Long userId, Integer from, Integer size) {
         userService.getUserById(userId);
-        List<ItemRequestDtoWithItems> allRequests = itemRequestRepository.findAllByRequesterIdNotOrderByCreatedDesc(userId, PageableFactory.makePage(from, size)).stream()
+        List<ItemRequestDtoWithItems> allRequests = itemRequestRepository.findAllByRequesterIdNotOrderByCreatedDesc(userId, PageableMaker.makePage(from, size)).stream()
                 .map(ItemRequestMapper::toItemRequestDtoWithItems)
                 .collect(Collectors.toList());
         allRequests.forEach(i -> i.setItems(itemService.getAllItemsByRequestId(i.getId()).stream()

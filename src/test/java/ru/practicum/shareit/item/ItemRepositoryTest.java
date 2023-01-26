@@ -13,7 +13,7 @@ import ru.practicum.shareit.request.dao.ItemRequestRepository;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.dao.UserRepository;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.util.PageableFactory;
+import ru.practicum.shareit.util.PageableMaker;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -56,7 +56,7 @@ public class ItemRepositoryTest {
         thirdItem = itemRepository.save(new Item(3L, "Название третьего", "Описание третьего", true, 2L, 2L));
         testEntityManager.persist(thirdItem);
         testEntityManager.getEntityManager().getTransaction().commit();
-        pageable = PageableFactory.makePage(0, 10);
+        pageable = PageableMaker.makePage(0, 10);
     }
 
     @AfterEach
