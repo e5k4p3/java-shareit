@@ -29,16 +29,6 @@ public class UserServiceImpl implements UserService {
             throw new EntityAlreadyExistsException("Пользователь с email " + user.getEmail() + " уже существует.");
         }
     }
-//    Пришлось сделать так, ибо, если судить по тестам постмана, при дубликации email, то id увеличивается на 1
-//    Метод ниже, как раз решение, которое я считаю правильным
-
-//    @Override
-//    @Transactional
-//    public User addUser(User user) {
-//        checkEmailExistence(user.getEmail());
-//        log.info("Пользователь с email " + user.getEmail() + " был добавлен.");
-//        return userRepository.save(user);
-//    }
 
     @Override
     @Transactional

@@ -9,12 +9,14 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.practicum.shareit.booking.BookingController;
 import ru.practicum.shareit.exceptions.*;
 import ru.practicum.shareit.item.ItemController;
+import ru.practicum.shareit.request.ItemRequestController;
 import ru.practicum.shareit.user.UserController;
 
 @Slf4j
 @RestControllerAdvice(assignableTypes = {UserController.class,
         ItemController.class,
-        BookingController.class})
+        BookingController.class,
+        ItemRequestController.class})
 public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -69,7 +71,7 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleUnsupportedState(final UnsupportedStateException e) {
         log.error(e.getMessage());
-        return new ErrorResponse(e.getMessage(), "Необрабатываемый аргумент."); // из за постмана, пришлось поменять местами...
+        return new ErrorResponse(e.getMessage(), "Необрабатываемый аргумент.");
     }
 
     @ExceptionHandler
@@ -78,5 +80,4 @@ public class ErrorHandler {
         log.error(e.getMessage());
         return new ErrorResponse("Отсутствие прав доступа.", e.getMessage());
     }
-//    из за тестов постмана, пришлось наплодить столько новых обработчиков...
 }

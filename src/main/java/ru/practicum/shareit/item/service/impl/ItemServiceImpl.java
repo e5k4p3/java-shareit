@@ -19,6 +19,7 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.item.util.ItemMapper;
 import ru.practicum.shareit.user.service.UserService;
+import ru.practicum.shareit.util.PageableMaker;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -80,9 +81,9 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional
-    public List<ItemDtoWithBooking> getAllItemsByUserId(Long userId) {
+    public List<ItemDtoWithBooking> getAllItemsByUserId(Long userId, Integer from, Integer size) {
         userService.getUserById(userId);
-        return itemRepository.findAllByOwner(userId).stream()
+        return itemRepository.findAllByOwner(userId, PageableMaker.makePage(from, size)).stream()
                 .map(ItemMapper::toItemDtoWithBooking)
                 .peek(i -> i.setLastBooking(BookingMapper.toBookingDto(
                         bookingRepository.findByItemIdAndEndBeforeAndStatusNot(i.getId(),
@@ -116,11 +117,11 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Item> getItemsByText(String text) {
+    public List<Item> getItemsByText(String text, Integer from, Integer size) {
         if (text.isBlank()) {
             return new ArrayList<>();
         }
-        return itemRepository.findByText(text);
+        return itemRepository.findByText(text, PageableMaker.makePage(from, size));
     }
 
     @Override
@@ -133,6 +134,12 @@ public class ItemServiceImpl implements ItemService {
                     " не может оставить комментарий предмету с id " + itemId + ", так как не пользовался им.");
         }
         return CommentMapper.toCommentDto(commentRepository.save(comment));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Item> getAllItemsByRequestId(Long requestId) {
+        return itemRepository.findAllByRequestId(requestId);
     }
 
     private Item checkItemExistence(Long itemId) {
