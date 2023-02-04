@@ -65,6 +65,7 @@ public class BookingServiceTest {
     @Test
     public void addBookingTestSuccess() {
         when(itemService.getItemById(Mockito.anyLong())).thenReturn(item);
+        when(userService.getUserById(Mockito.anyLong())).thenReturn(firstUser);
         when(bookingRepository.save(any())).thenReturn(booking);
 
         Booking addedBooking = bookingService.addBooking(BookingMapper.toBookingDto(booking), 1L);
