@@ -40,6 +40,7 @@ public class BookingServiceImpl implements BookingService {
         booking.setBooker(userService.getUserById(userId));
         booking.setItem(itemService.getItemById(bookingDto.getItemId()));
         booking.setStatus(WAITING);
+        log.info("Бронирование с id пользователя " + booking.getBooker().getId() + " и id предмета " + booking.getItem().getId() + " было добавлено.");
         return bookingRepository.save(booking);
     }
 
@@ -59,6 +60,7 @@ public class BookingServiceImpl implements BookingService {
         } else if (booking.getStatus().equals(APPROVED) && !status) {
             booking.setStatus(REJECTED);
         }
+        log.info("У бронирования с id " + bookingId + " был изменен статус на " + booking.getStatus() + ".");
         return booking;
     }
 
